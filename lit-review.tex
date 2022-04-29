@@ -1,0 +1,65 @@
+\documentclass[10pt,twocolumn]{article} 
+
+% required packages for Oxy Comps style
+\usepackage{oxycomps} % the main oxycomps style file
+\usepackage{times} % use Times as the default font
+\usepackage[style=numeric,sorting=nyt]{biblatex} % format the bibliography nicely
+
+\usepackage{amsfonts} % provides many math symbols/fonts
+\usepackage{listings} % provides the lstlisting environment
+\usepackage{amssymb} % provides many math symbols/fonts
+\usepackage{graphicx} % allows insertion of grpahics
+\usepackage{hyperref} % creates links within the page and to URLs
+\usepackage{url} % formats URLs properly
+\usepackage{verbatim} % provides the comment environment
+\usepackage{xpatch} % used to patch \textcite
+
+\bibliography{references}
+\DeclareNameAlias{default}{last-first}
+
+\xpatchbibmacro{textcite}
+  {\printnames{labelname}}
+  {\printnames{labelname} (\printfield{year})}
+  {}
+  {}
+
+\pdfinfo{
+    /Title (CS Comps Literature Review)
+    /Author (Cassandra Gutierrez)
+}
+
+\title{CS Comps Literature Review}
+
+\author{Cassandra Gutierrez}
+\affiliation{Occidental College}
+\email{gutierrezc@oxy.edu}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\section{Problem Context}
+In order to promote health and prevent diseases, most countries have food recommendations in place for their citizens. They include specific calorie, macronutrient, mineral, and vitamin intake values for various age groups, genders, and subpopulations (pregnant females, athletes, ect.).\cite{dietary_guidelines} While the majority of people do not adhere to these guidelines or only approximate their suggested consumption values, there are some subpopulations for whom meeting specific nutritional requirements is critical. In particular, athletes and those with specific fitness goals.
+
+Athletes have unique dietary requirements that are crucial for optimizing performance. In fact, there are entirely different nutritional guidelines for athletes.\cite{perishable_2022} The distribution of macro nutrients revolving around physical activity is one example of their unique dietary needs. For example, it is suggested that athletes consume 1.5 grams of carbohydrates per pound of body weight 4 hours before a sports event. Additionally, it is suggested that athletes consume 1-1.2 grams of carbohydrates per kilogram of body weight per hour for the first 4 hours after exercise. Due to the nature of the extremely particular values, athletes must frequently track their nutritional value intake per meal. The practice of counting consumed grams of carbohydrates, fats, and proteins is known as macronutrient (macro) counting.\cite{scl_health}
+
+Furthermore, there are certain fitness goals that require macro and calorie counting. Gaining muscle mass, for example, necessitates a larger protein intake than the normal person. For optimal muscle growth, 1.6 grams of protein per kilogram of body weight is required per day.\cite{schoenfeld_aragon_2018} This protein consumption should be distributed across 4 meals in a day. As a result, people who want to grow muscle mass typically need to count their protein macros per meal in order to get the best results. Similarly, healthy and effective weight loss requires a calorie deficit of 500-1,000 calories per day.\cite{nasm} This entails consuming 500-1,000 less calories than the usual maintenance value. Furthermore, the macro composition of daily calories is critical for effective weight loss.\cite{scl_health} As a result, losing weight is merely another fitness goal that requires calorie and macro counting for optimal results.
+
+The issue at hand is that meal planning around calories and macros is time consuming and unsustainable. Individuals that track nutrition intake often have to manually search through nutrition labels in grocery stores and accurately calculate nutrition values.  For the normal person with a busy schedule, this can be highly time consuming. Furthermore, tracking frequently reduces the variety of foods consumed by the individual. Since a lot of time and effort goes into planning meals that suit desired calorie and macro values, people typically repeat meals to avoid the process of finding and calculating values for different meals.\cite{invictus_fitness_2019} This is unsustainable since constantly repeating meals can detract from the pleasure of eating while also limiting the variety of minerals and vitamins available in one's diet.
+
+\section{Technical Background}
+
+\section{Prior Work}
+Macro and calorie counting is not a new phenomenon as there are numerous applications that serve as a counting tool. The most popular one is a mobile app called MyFitnessPal (MFP).\cite{myfitnesspal} It is a food diary in which users must log everything that they eat throughout the day. MFP sums up the number of calories/macros a user has consumed and calculates how much they have left to eat for the day. Users essentially have complete responsibility of figuring out what to eat. While MFP does have a database of meal ideas, they are not catered toward targeting users’ remaining nutritional values. Users must still determine whether the meals will meet the remainder of their requirements. In comparison, my app will provide users with meals that are specific to their nutritional goals.
+
+There are also several apps that handle the issue of meal variety when it comes to macro/calorie counting. Some examples include Prospre, My Diet Meal Plan, and Eat This Much. They all work in similar ways. The user inputs their calorie and macro values, the app generates a variety of meals for a week based on those values, and a grocery list is generated based on those meals’ ingredients. However, these apps’ grocery list items are not specific enough to accurately amount to a user’s macro/calorie goals. This is due to the fact that they do not account for the varying nutritional values for different brands of the same food items on the market. 
+
+Take, for example, ground beef. There are about 4 different brands of ground beef to pick from at Target.\cite{target} We'll compare two of them. Ground beef from the Good & Gather brand contains 22 grams of fat per 4 ounces, while ground beef from the Laura brand has 4.5 grams of fat per 4 ounces. That's a 17.5-gram difference in fat, which is significant because it influences the number of calories in a serving size. The brand with the higher fat content contains 140 calories more than the other. These distinctions are crucial for someone with a weight-loss goal, for example. These minor discrepancies can add up across all food items and entirely throw off calorie/macro values without users knowing. As a result, present apps aren't precise enough in estimating nutritional values to help users reach their goals. 
+
+My app, on the other hand, will build a grocery list that includes specific brands in order to precisely calculate the user's nutritional goals. More specifically, it will go through a grocery store’s different brands of the same food item to fine the one with the nutritional values that best match the user's goal. In this way my app will be more effective in assisting users in achieving their fitness objectives by allowing them to optimize results through accurate dieting.
+
+\printbibliography
+\end{document}
