@@ -1,0 +1,137 @@
+\documentclass[10pt,twocolumn]{article} 
+
+% required packages for Oxy Comps style
+\usepackage{oxycomps} % the main oxycomps style file
+\usepackage{times} % use Times as the default font
+\usepackage[style=numeric,sorting=nyt]{biblatex} % format the bibliography nicely
+
+\usepackage{amsfonts} % provides many math symbols/fonts
+\usepackage{listings} % provides the lstlisting environment
+\usepackage{amssymb} % provides many math symbols/fonts
+\usepackage{graphicx} % allows insertion of grpahics
+\usepackage{hyperref} % creates links within the page and to URLs
+\usepackage{url} % formats URLs properly
+\usepackage{verbatim} % provides the comment environment
+\usepackage{xpatch} % used to patch \textcite
+
+\bibliography{references}
+\DeclareNameAlias{default}{last-first}
+
+\xpatchbibmacro{textcite}
+  {\printnames{labelname}}
+  {\printnames{labelname} (\printfield{year})}
+  {}
+  {}
+
+\pdfinfo{
+    /Title (CS Comps Literature Review)
+    /Author (Cassandra Gutierrez)
+}
+
+\title{CS Comps Literature Review}
+
+\author{Cassandra Gutierrez}
+\affiliation{Occidental College}
+\email{gutierrezc@oxy.edu}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper serves as a literature review for my comps project proposal, a smartphone application that generates a store-specific grocery list tailored to users’ calorie and macronutritional goals. The function of the app is to provide users with different meals and brand-specific food items that precisely meet their desired nutritional values. The main focus is calculating the caloric and macro nutritional values of food products in order to accurately match the users' personalized target values. 
+
+\end{abstract}
+
+\section{Problem Context}
+In order to promote health and prevent diseases, most countries have food recommendations in place for their citizens. They include specific calorie, macronutrient (macro), mineral, and vitamin intake values for various age groups, genders, and subpopulations (pregnant females, athletes, ect.).\cite{dietary_guidelines} While the majority of people do not adhere to these guidelines or only approximate their suggested consumption values, there are some subpopulations for whom meeting specific nutritional requirements is critical. In particular, athletes and those with specific fitness goals. To do so these subpopulations often utilize macro counting, the practice of counting consumed grams of carbohydrates, fats, and proteins in a day. \cite{scl_health} However, this is not an easy task. 
+
+Athletes have unique dietary requirements that are crucial for optimizing performance. In fact, there are entirely different nutritional guidelines for athletes.\cite{perishable_2022} The distribution of macros revolving around physical activity is one example of their unique dietary needs. For example, it is suggested that athletes consume 1.5 grams of carbohydrates per pound of body weight 4 hours before a sports event. Additionally, it is suggested that athletes consume 1-1.2 grams of carbohydrates per kilogram of body weight per hour for the first 4 hours after exercise. Because their macro needs are so specific for optimal performance, athletes must frequently track their nutritional intake per meal.
+
+Furthermore, there are certain fitness goals that require macro counting as well as calorie counting. Gaining muscle mass, for example, necessitates a larger protein intake than the normal person. For optimal muscle growth, 1.6 grams of protein per kilogram of body weight is required per day.\cite{schoenfeld_aragon_2018} This protein consumption should be distributed across 4 meals in a day. As a result, people who want to grow muscle mass typically need to count their protein macros per meal in order to get the best results. Similarly, healthy and effective weight loss requires a calorie deficit of 500-1,000 calories per day.\cite{nasm} This entails consuming 500-1,000 less calories than the usual maintenance amount. Furthermore, the macro composition of daily calories is critical for effective weight loss.\cite{scl_health} As a result, losing weight is merely another fitness goal that requires calorie and macro counting for optimal results.
+
+The issue at hand is that meal planning around calories and macros is time consuming and unsustainable. Individuals that track nutrition intake often have to manually search through nutrition labels in grocery stores and accurately calculate nutrition values. For the normal person with a busy schedule, this can be highly time consuming. Furthermore, tracking frequently reduces the variety of foods consumed by the individual. Since a lot of time and effort goes into planning meals that suit desired calorie and macro values, people typically repeat meals to avoid the process of finding and calculating values for new meals.\cite{invictus_fitness_2019} This is unsustainable because constantly eating the same foods limits the variety of vitamins and minerals available in one's diet. This poses health risks since individuals must consume certain vitamins and minerals to maintain good health and prevent chronic diseases.\cite{dietary_guidelines}
+
+The comps app is meant to address these barriers to calorie/macro counting in order to help users achieve their fitness goals. Specifically, it will provide users with a variety of different meals from a database of recipes. This automates meal planning for users, allows them to enjoy a wider range of foods, and increases their intake of vitamins and minerals. Then, it will automate the search of nutrition labels from a user-chosen grocery store to find the food items with the macro compositions that fit the user’s inputted target. This removes the need of users manually looking through and calculating the nutritional values of ingredients themselves. This would allow users to accurately and conveniently optimize their diet to help them reach their fitness goals. 
+
+\section{Technical Background}
+The most complicated component of the comps project is the algorithm that will generate a meal’s food item list whose nutritional values match that of the users’ target nutritional values. This is considered a maximal constraint satisfaction problem (MAX-CSP), a problem whose solution must satisfy a maximum amount of constraints. In this case, the constraints are calorie, carbohydrate, protein, and fat values. We want to satisfy all of their values in our solution. The most popular way to solve a MAX-CSP is to use a branch and bound algorithm, which are algorithms used to find the optimal solution for combinatory mathematical optimization problems.\cite{sundmark_2005} Several studies have looked into how to generate optimal meal plans based on constraints. We will take a look 4 notable studies and how they approached the problem. 
+
+\begin{enumerate}
+    \item At Stanford University, a project was conducted to model the design of a nutritionally optimal and affordable meal plan.\cite{MENSAH_HERMAWAN} The main constraint here was budget of food items, along with nutritional composition (sodium, protein, and fat). They attempted 2 approaches, each combining different algorithmic techniques. One approach utilized Branch and Bound Forward Search while the other utilized Fast-Informed Bound with One-Step Lookahead. The study found that the most optimal meal plan was achieved with the Branch and Bound Forward Search algorithm. They imagine that the model can be tailored to include different nutritional needs. This implementation is worth taking a look at to potentially incorporate caloric and macro nutrient constraints. 
+    \item In a 2015 study at the University of Regensburg, researchers created a recommender system for recipes that meet personalized nutritional values.\cite{10.1145/2792838.2799665} They calculate the user's recommended nutritional intake (based on guidelines from international health agencies), and create a set of recipes based on the user’s preference data. Then a full search is run to find every possible combination of the recommended recipes that match the nutritional requirements. The study found that more flexibility (e.g. ability to alter portion sizes, increase number of meals in a day) would allow the algorithm to be able to handle more complicated search cases. This work is helpful as it offers an aspect of flexibility to take into consideration in order to optimize our algorithm design. We can consider allowing portion sizes to be tweaked or allow the algorithm to include snacks in order to satisfy the constraints of our problem. 
+    \item This last study designs and implements a constraint satisfaction algorithm for meal planning.\cite{sundmark_2005} Their constraints included time, cost, difficulty, allergies, and nutritional values. They utilized an approach based on weighted CSPs, meaning some constraints are more important than others. For instance, the allergy constraint must be met or there is no solution. While they implemented and tested 4 different algorithm approaches, it was found that the Partial Forward Checking (PFC) algorithm produced the most optimal solution. PFC is a branch and bound algorithm that anticipates dead-ends before they actually occur.\cite{Larrosa1_Meseguer} It allows for a faster, more efficient search by avoiding redundant checks for solutions. However, the study found that search time significantly increased as the number of constraints and size of recipe database increased. This work is important to reference when considering what trade-offs we are willing to accept for our algorithm implementation.  
+    \item In a 2016 study, an algorithm was designed to generate a customized meal plan to meet specific nutritional requirements (vitamins and minerals).\cite{pikes_adams_2016} The nutrients (constraints) were given a Lower Bound (LB), which is the minimum value amount of a specific nutrient required for the meal plan to be accepted as a solution. The constraints were also given an Ideal Amount (IA), which is the value amount of the nutrient that is prioritized over the LB. They created a model that prioritizes nutrients, errs meal variety, and finds a meal plan that best satisfies the constraints. Their prototype works by starting with a blank meal plan and gradually adding food items to satisfy all constraints. It starts with the nutrient(s) with the highest priority, then adds the food item with the largest amount of that nutrient, and repeats the procedure for the nutrient with the next-highest priority. While the algorithm found food items that matched nutritional values, it produced strange combinations (Twinkies with Redbull). This work is useful in providing insight on what to look out for and prioritize in our algorithm's implementation (food combinations that are actually consumable/enjoyable).
+\end{enumerate}
+The algorithms and implementations of prior works offer frameworks and potential bases for the implementation of our project. Their findings allow us to optimize our algorithm without trial and error. It helps us consider what aspects of the output to prioritize, what algorithms to weed out, and what potential trade-offs we may need to accept, among other things. These factors are all heavily dependent on what the app will prioritize in terms of functionality and purpose, which will be mostly determined by user feedback. This is discussed further in the Methods section. 
+
+\section{Prior Work}
+Macro and calorie counting is not a new phenomenon as there are numerous applications that serve as a counting tool. The most popular one is a mobile app called MyFitnessPal (MFP).\cite{myfitnesspal} It is a food diary in which users must log everything that they eat throughout the day. MFP sums up the number of calories/macros a user has consumed and calculates how much they have left to eat for the day. Users essentially have complete responsibility of figuring out what to eat and calculating their portion sizes. MFP is simply a tool to tell users if they're on track to meet their goal. While it does have a database of meal ideas, they are not catered toward targeting users’ remaining nutritional values. Users must still determine whether the meals will meet the remainder of their requirements. In comparison, my app will provide users with meals that are tailored to meet their specific macro/calorie goals.
+
+There are also exists several apps that handle the issue of meal variety when it comes to macro/calorie counting. Some examples include Prospre, My Diet Meal Plan, and Eat This Much. They all work in similar ways. The user inputs their calorie/macro values, the app generates a week's worth of meals that are based on those values, and a grocery list is generated based on those meals’ ingredients. While existing apps provide users with great meal variety, these apps generate a list of food items whose nutritional values are not accurate enough to effectively amount to a user’s macro/calorie target values. This is because these apps use generic nutritional values for each food item provided by the U.S. Department of Agriculture.\cite{USDA}
+What existing apps fail to take into account is the varying nutritional values of different brands for the same food items on the market.
+
+Take, for example, ground beef. There are about 4 different brands of ground beef to pick from at Target.\cite{target} We'll compare 2 of them. Ground beef from the Good & Gather brand contains 22 grams of fat per 4 ounces, while ground beef from the Laura brand has 4.5 grams of fat per 4 ounces. That's a 17.5-gram difference in fat, which is significant because it influences the number of calories in a serving size. As a result, the brand with the higher fat content contains 140 calories more than the other. These distinctions are crucial for someone with a weight-loss goal, for example. While this is just one food item, these minor discrepancies add up across all food items and can entirely throw off calorie/macro values without users knowing. As a result, existing apps aren't precise enough in estimating nutritional values to effectively help users reach their goals. 
+
+The comps app, on the other hand, will build a grocery list with brand-specific items in order to precisely calculate a meal that meets the user's target values. Its algorithm will go through a grocery store’s different brands of the same food item to find the one with the macro values that best match the user's goal. In this way my app will generate more precise data than existing apps. This, in turn, makes the comps app more effective in assisting users achieve their fitness objectives by allowing them to optimize results through precise dieting.
+
+\section{Ethical Considerations}
+As previously mentioned, there exists dietary guidelines for individuals that are necessary for maintaining good health and reducing risks of chronic diseases. These guidelines include recommendations for calorie intake as well as macro intake, which are the central focus of the comps app. It's important to note that the app will allow users to customize their own calorie and macro intake, posing the risk of allowing them to ignore the recommended  guidelines for good health. This feature allows for potential for misuse of the app, especially for enabling eating disorders and unhealthy eating.
+
+The calorie counting feature of the app has the potential to enable eating disorders. To demonstrate, in a 2017 study, 150 individuals with eating disorders were surveyed about their usage of a health app that included a feature to track food intake.\cite{psyd} Of those who participated in the study, 74.3\% reported using the app to count their calories and 73.1\% of those participants reported the app to be a contributor to their eating disorder symptoms. This means that calorie tracking is a component that can contribute to the perpetuation of eating disorders. Since the comps app will allow users to set their own calorie intake, and thereby give users the ability to count calories, it can also encourage eating disorder behaviors. This is a potential case of misuse as the app is meant to help users attain health goals as opposed to perpetuating eating disorders. It's important to acknowledge the potential of providing persons suffering from eating disorders with yet another enabling app, especially with the rate of eating disorders on the rise.\cite{katella_2021}
+
+Additionally, the comps app's customization of macronutrients has the potential to enable unhealthy diets that do not align with recommended dietary guidelines. For example, the ketogenic diet is a diet deprived of the carbohydrate macro to force the body to use other sources of fuel, specifically stored fat, with the goal of lowering body fat composition and ultimately losing weight. The comps app can potentially help individuals follow these types of fad diets because a user can simply set their macros to zero carbohydrates. However, carbohydrates are an essential part of a healthy diet. The Dietary Guidelines for Americans recommend that carbohydrates make up 45-65\% of an individual’s total daily calories. They are the body’s primary source of energy and are essential in fueling various bodily functions and protecting against diseases.\cite{mayo_clinic_2022} According to Harvard health, a fad diet like the ketogenic one causes a deficiency in nutrients, liver and kidney problems, constipation, and mood swings.\cite{harvard_health_2020} Those who are unaware of the negative effects of straying away from dietary guidelines may misuse the comps app to partake in unhealthy diets. Again, this undermines the app's initial purpose of assisting users in achieving their nutritional and fitness goals.
+
+However, there are ways to mitigate these risks and potential misuses of the app. Specifically, through the implementation of calorie limits, warning signs, and input resets. 
+\begin{itemize}
+    \item \textbf{Calorie limits:} Existing calorie/macro counting apps have dealt with these problems by setting a minimum value to calorie inputs. For example, MFP implements a daily calorie minimum of 1,500 for males and 1,200 for females.\cite{MFP_nutrition_goals} This prevents users from under eating by preventing them from setting their calories below the limit. It can prevent enabling eating disorders that entail extreme calorie restrictions, like anorexia nervosa.\cite{johns_hopkins_medicine_2021} 
+    \item \textbf{Warning signs:} Warning signs can potentially prevent unhealthy eating by helping users follow dietary guidelines. Dietary guidelines include recommended calorie values that are specific to height, weight, gender, and age.\cite{dietary_guidelines} These attributes can be collected from users to calculate their recommended calorie intake value and compare it to users' inputted calorie value. If the values are significantly different, a warning sign can display the user's recommended calorie values. Similarly, dietary guidelines include recommended macro composition. For instance, 45-65\% of a person's diet should be made up of carbohydrates.\cite{dietary_guidelines} A user's macro input values can be compared to the recommended values. If they are significantly different, a warning sign can display the recommended macro values.
+    \item \textbf{Input resets:} Another solution can be resetting users' input values if they are not following recommended guidelines. If the user disregarded the warning sign and decided to continue with their own values, these values can be automatically reset to the recommended values after a short period of time. The goal is to reduce app misuse by inconveniencing users by forcing them to continuously reenter any unhealthy nutritional values. 
+\end{itemize}
+
+\section{Methods}
+There are three main stages of the app that need to be handled: algorithm implementation, data collection, and building the mobile app. This section discusses the planned approach and process to completing these three stages.
+
+\subsection{Algorithm Design}
+The implementation of the algorithm is the most complex aspect of my comps project. Therefore, it will be the very first thing I do. As mentioned in the Technical Background, there are several aspects of the algorithm that need to be set in stone in order to determine the correct implementation. In order to do this, I will conduct interviews or surveys to gauge what my target audience prefers in a calorie/macro counting app. This is mainly in terms of the output of the algorithm. Some sample questions include:
+\begin{itemize}
+\item What nutritional values are you most concerned about accurately meeting and why?
+\item How many meals do you eat in a day? 
+\item Are you willing to calculate portion sizes if it means meeting your nutritional values?
+\item What (if any) calorie/macro counting app do you use and why?
+\end{itemize}
+Responses to these questions will have a significant impact on the function, design, and implementation of the algorithm because they will help define the specifics of the output. Once that is set, I plan to create a small set of pseudo data for the purpose of implementation. Then, I can move onto applying the algorithm to real data from grocery stores.
+
+\subsection{Data Collection}
+There are two datasets needed for the implementation of this project. First, a database of recipes is needed in order to provide users with a variety of meal plans. Due to time constraints of the project, I will not create this dataset. There are great recipe databases available online. For instance, BigOven.com Recipe API provides third-parties with access to 1,000,000+ recipes.\cite{bigoven_api} I will search for a free recipe database with enough variety to use for my app. 
+
+Second, nutritional data of food items is needed from grocery stores. I will build a web scraper to collect this data from grocery stores’ websites. For this reason, I can only include grocery stores that have food items’ nutrition labels available on their website. They include Vons, Target, Trader Joe’s, Walmart, Ralphs, and Sprouts Farmers Market. There exists many methods to build a web scraper.\cite{white_2022} However, most of these chain grocery stores’ websites are made with Javascript. Therefore, I will be using Selenium to web scrape because it is best for extracting data from Javascript code.\cite{white_2022}
+
+\subsection{Building the App}
+Due to the fact that I have no experience building mobile apps, I will be basing most of the build on Occidental College Professor Chen’s Mobile apps course. The course is Android-only and so my comps project will be an Android app. I plan to watch the recorded lectures over the summer and into the Fall semester. I can potentially learn app building through other resources, but this course is already structured and I have a point of contact secured for help, Professor Chen and other students at Oxy that have taken the course.
+
+In terms of the actual design for the app, I will be conducting research to determine what features and interfaces work best for the purpose of calorie/macro counting. This will include drawing inspiration from observed commonalities across existing calorie/macro counting apps, looking into the methods and available documentation of existing apps, examining user reviews that have to do with UX/UI design for existing apps, and conducting interviews from target users to determine what they’d find most useful. I plan to conduct at least two surveys for feedback on my mobile app while it is in the works. 
+
+I plan on leaving this as the last step of the whole project since the main focus is the algorithm. There exists the potential of my algorithm not being successful, in which case the app will not be necessary to build anymore. In that case, my comps project will simply be an evaluation of the algorithm that I implemented and discussions on its limitations. 
+
+\section{Evaluation}
+
+As previously mentioned, the design of the algorithm and its output will be largely based on responses from the target audience of the app. Similarly, the evaluations must be based on it as well. Since the output is not defined, success criteria cannot be defined either at this stage in the process. Although, it will be based on the success of the algorithm in achieving whatever the output is defined as. Additionally, evaluations will come from users through surveys as well. Potential metrics include level of satisfaction with meal variety, whether users actually followed the meal plans, whether users followed the brand-specific recommendation when making purchases, ect. 
+
+\section{Proposed Timeline}
+\begin{itemize}
+    \item June 1-15:Utilize existing apps/prior works. 
+    \item June 15-30: Prepare interview questions on what target audience would want to see in terms of output. Research user reviews/feedback on existing apps. Figure out interview logistics: permissions, contracts, ect. 
+    \item July 1-15: Conduct interviews. Analyze responses. Think about evaluation metrics.
+    \item July July 16-31: Begin Mobile Apps course. Find recipe dataset that you will use for final project (submit for approval?).
+    \item August 1-15: no work – vacation
+    \item August 16-30: Create small, workable dataset for algorithm implementation. Begin algorithm implementation: attempt to tweak prior works’ implementations. Set up appointments for help. 
+    \item September 1-15: Continue algorithm implementation. 
+    \item September 16-31: Finish algorithm? (Before anything else)
+    \item October 1-15: Web scrape grocery data: narrow down grocery store options. Figure out & implement data structure for grocery store data. Implement algorithm with actual grocery database.
+    \item October 16-30: Begin creating mobile app. Prepare questions for user feedback. Conduct interviews.
+    \item: November 1-15: Tweak app/algorithm based on responses. Continue building app. 
+    \item November 16-31: Conduct another round of interviews – users, professors, ect. Final changes. 
+\end{itemize}
+
+\printbibliography
+\end{document}
